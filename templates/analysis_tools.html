@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="analysis-tools">
+    <h2>Analysis Tools for {{ month }} Crime Data</h2>
+    
+    <div class="tools-container">
+        <div class="tool-card">
+            <h3>General Analysis Tools</h3>
+            <p>Tools to explore the overall structure of the crime data tree.</p>
+            <a href="{{ url_for('general_analysis') }}" class="btn-primary">Access General Tools</a>
+        </div>
+        
+        <div class="tool-card">
+            <h3>Specific Analysis Tools</h3>
+            <p>Tools focused on the current hierarchical analysis structure.</p>
+            <a href="{{ url_for('specific_analysis') }}" class="btn-primary">Access Specific Tools</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

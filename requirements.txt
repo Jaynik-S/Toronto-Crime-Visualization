@@ -1,1 +1,3 @@
-graphviz # this library requires external installation from https://graphviz.org/download/
+flask==2.0.1
+graphviz==0.17
+gunicorn==20.1.0  # For deployment (optional)

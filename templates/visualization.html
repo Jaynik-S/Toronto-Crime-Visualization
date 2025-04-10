@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="visualization-container">
+    <h2>{{ month }} Crime Data Visualization</h2>
+    
+    <div class="svg-container" id="svg-container">
+        {{ svg_data|safe }}
+    </div>
+    
+    <div class="zoom-controls">
+        <button id="zoom-in" class="zoom-btn">+</button>
+        <button id="zoom-out" class="zoom-btn">−</button>
+        <button id="zoom-reset" class="zoom-btn">Reset</button>
+    </div>
+    
+    <div class="action-buttons">
+        <a href="{{ url_for('analysis_tools') }}" class="btn-primary">Analyze This Data</a>
+        <a href="{{ url_for('index') }}" class="btn-secondary">Start Over</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Get the SVG element
+    const svgElement = document.querySelector('#svg-container svg');
+    
+    if (svgElement) {
+        // Add necessary attributes to SVG for proper sizing
+        svgElement.setAttribute('width', '100%');
+        svgElement.setAttribute('height', '100%');
+        
+        // Initialize pan-zoom
+        const panZoomInstance = svgPanZoom(svgElement, {
+            zoomEnabled: true,
+            controlIconsEnabled: false,
+            fit: true,
+            center: true,
+            minZoom: 0.1,
+            maxZoom: 10,
+            zoomScaleSensitivity: 0.2
+        });
+        
+        // Add event listeners for zoom buttons
+        document.getElementById('zoom-in').addEventListener('click', function(ev) {
+            ev.preventDefault();
+            panZoomInstance.zoomIn();
+        });
+        
+        document.getElementById('zoom-out').addEventListener('click', function(ev) {
+            ev.preventDefault();
+            panZoomInstance.zoomOut();
+        });
+        
+        document.getElementById('zoom-reset').addEventListener('click', function(ev) {
+            ev.preventDefault();
+            panZoomInstance.resetZoom();
+            panZoomInstance.center();
+        });
+    }
+});
+</script>
+{% endblock %}

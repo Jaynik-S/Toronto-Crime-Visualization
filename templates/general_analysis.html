@@ -1,0 +1,93 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="general-analysis">
+    <h2>General Analysis Tools</h2>
+    
+    <div class="tool-options">
+        <div class="tool-option" id="display-tree">
+            <h3>1) Display Full Tree</h3>
+            <button class="btn-tool" data-action="1">Show Full Tree</button>
+        </div>
+        
+        <div class="tool-option" id="search-value">
+            <h3>2) Search for Value in Tree</h3>
+            <div class="search-form">
+                <input type="text" id="search-input" placeholder="Enter value to search">
+                <button class="btn-tool" data-action="2">Search</button>
+            </div>
+        </div>
+        
+        <div class="tool-option" id="most-common">
+            <h3>3) Find Most Common Crime Path</h3>
+            <button class="btn-tool" data-action="3">Show Most Common</button>
+        </div>
+        
+        <div class="tool-option" id="least-common">
+            <h3>4) Find Least Common Crime Path</h3>
+            <button class="btn-tool" data-action="4">Show Least Common</button>
+        </div>
+    </div>
+    
+    <div class="results-container">
+        <div id="results-area"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    $('.btn-tool').click(function() {
+        const action = $(this).data('action');
+        let formData = new FormData();
+        formData.append('action', action);
+        
+        if (action === '2') {
+            const searchValue = $('#search-input').val();
+            if (!searchValue) {
+                alert('Please enter a value to search');
+                return;
+            }
+            formData.append('search_value', searchValue);
+        }
+        
+        $.ajax({
+            url: '{{ url_for("general_analysis") }}',
+            method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                let resultHTML = '';
+                
+                if (action === '1') {
+                    resultHTML = `<pre class="tree-display">${response.tree}</pre>`;
+                }
+                else if (action === '2') {
+                    if (response.found) {
+                        resultHTML = `<p>Found "${$('#search-input').val()}" with ${response.occurrences} occurrences.</p>
+                                     <p>Path: ${response.path}</p>`;
+                    } else {
+                        resultHTML = `<p>Value not found in tree.</p>`;
+                    }
+                }
+                else if (action === '3') {
+                    resultHTML = `<p>Most common crime path is: ${response.path}</p>
+                                 <p>It occurred ${response.occurrences} times.</p>`;
+                }
+                else if (action === '4') {
+                    resultHTML = `<p>Least common crime path is: ${response.path}</p>
+                                 <p>It occurred ${response.occurrences} times.</p>`;
+                }
+                
+                $('#results-area').html(resultHTML);
+            },
+            error: function() {
+                $('#results-area').html('<p class="error">An error occurred. Please try again.</p>');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

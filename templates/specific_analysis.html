@@ -1,0 +1,174 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="specific-analysis">
+    <h2>Specific Analysis Tools</h2>
+    
+    {% if choice == 1 %}
+    <h3>Neighbourhood-Based Analysis</h3>
+    <div class="tool-options">
+        <div class="tool-option">
+            <h4>1) Top Crime Neighbourhoods</h4>
+            <button class="btn-tool" data-action="1">Show Top Neighbourhoods</button>
+        </div>
+        
+        <div class="tool-option">
+            <h4>2) Top Crimes in Specific Neighbourhood</h4>
+            <div class="search-form">
+                <input type="text" id="neighbourhood-input" placeholder="Enter neighbourhood name">
+                <button class="btn-tool" data-action="2">Search</button>
+            </div>
+        </div>
+        
+        <div class="tool-option">
+            <h4>3) Neighbourhood Crime Rank</h4>
+            <div class="search-form">
+                <input type="text" id="rank-input" placeholder="Enter neighbourhood name">
+                <button class="btn-tool" data-action="3">Get Rank</button>
+            </div>
+        </div>
+    </div>
+    
+    {% elif choice == 2 %}
+    <h3>Time-Based Analysis</h3>
+    <div class="tool-options">
+        <div class="tool-option">
+            <h4>1) Top Crime Neighbourhoods at Night/Day</h4>
+            <button class="btn-tool" data-action="1">Show Top Neighbourhoods</button>
+        </div>
+        
+        <div class="tool-option">
+            <h4>2) Specific Crime Shift Between Night and Day</h4>
+            <div class="search-form">
+                <input type="text" id="crime-shift-input" placeholder="Enter crime category">
+                <button class="btn-tool" data-action="2">Search</button>
+            </div>
+        </div>
+    </div>
+    
+    {% elif choice == 3 %}
+    <!-- Similar structure for Crime-Based Analysis -->
+    <h3>Crime-Based Analysis</h3>
+    <div class="tool-options">
+        <div class="tool-option">
+            <h4>1) Top Crime Categories</h4>
+            <button class="btn-tool" data-action="1">Show Top Categories</button>
+        </div>
+        
+        <div class="tool-option">
+            <h4>2) Top Neighbourhoods for Specific Crime</h4>
+            <div class="search-form">
+                <input type="text" id="crime-input" placeholder="Enter crime category">
+                <button class="btn-tool" data-action="2">Search</button>
+            </div>
+        </div>
+        
+        <div class="tool-option">
+            <h4>3) Crime Category Rank</h4>
+            <div class="search-form">
+                <input type="text" id="crime-rank-input" placeholder="Enter crime category">
+                <button class="btn-tool" data-action="3">Get Rank</button>
+            </div>
+        </div>
+    </div>
+    
+    {% elif choice == 4 %}
+    <!-- Similar structure for Premises-Based Analysis -->
+    <h3>Premises-Based Analysis</h3>
+    <!-- Similar tool options structure -->
+    {% endif %}
+    
+    <div class="results-container">
+        <div id="specific-results-area"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    $('.btn-tool').click(function() {
+        const action = $(this).data('action');
+        let formData = new FormData();
+        formData.append('action', action);
+        
+        // Get input value based on the action
+        if (action === '2') {
+            {% if choice == 1 %}
+            const specificValue = $('#neighbourhood-input').val();
+            {% elif choice == 2 %}
+            const specificValue = $('#crime-shift-input').val();
+            {% elif choice == 3 %}
+            const specificValue = $('#crime-input').val();
+            {% elif choice == 4 %}
+            const specificValue = $('#premises-input').val();
+            {% endif %}
+            
+            if (!specificValue) {
+                alert('Please enter a value');
+                return;
+            }
+            formData.append('specific_value', specificValue);
+        }
+        else if (action === '3') {
+            {% if choice == 1 %}
+            const specificValue = $('#rank-input').val();
+            {% elif choice == 3 %}
+            const specificValue = $('#crime-rank-input').val();
+            {% elif choice == 4 %}
+            const specificValue = $('#premises-rank-input').val();
+            {% endif %}
+            
+            if (!specificValue) {
+                alert('Please enter a value');
+                return;
+            }
+            formData.append('specific_value', specificValue);
+        }
+        
+        $.ajax({
+            url: '{{ url_for("specific_analysis") }}',
+            method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                let resultHTML = '';
+                
+                // Process response based on action and choice
+                if (action === '1') {
+                    resultHTML = '<h4>Top Rankings:</h4><ul>';
+                    for (const [rank, data] of Object.entries(response.rankings)) {
+                        resultHTML += `<li>${rank}: ${data[0]} (${data[1]} occurrences)</li>`;
+                    }
+                    resultHTML += '</ul>';
+                }
+                else if (action === '2') {
+                    if (response.name) {
+                        resultHTML = `<h4>Top items for ${response.name}:</h4><ul>`;
+                        for (const [rank, data] of Object.entries(response.rankings)) {
+                            resultHTML += `<li>${rank}: ${data[0]} (${data[1]} occurrences)</li>`;
+                        }
+                        resultHTML += '</ul>';
+                    } else {
+                        resultHTML = '<p>Item not found in the tree.</p>';
+                    }
+                }
+                else if (action === '3') {
+                    if (response.name) {
+                        resultHTML = `<p>${response.name} has a rank of ${response.rank} with a frequency of ${response.frequency}.</p>`;
+                    } else {
+                        resultHTML = '<p>Item not found in the tree.</p>';
+                    }
+                }
+                
+                $('#specific-results-area').html(resultHTML);
+            },
+            error: function() {
+                $('#specific-results-area').html('<p class="error">An error occurred. Please try again.</p>');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="welcome">
+    <h2>Welcome to Toronto Crime Data Analysis Tool</h2>
+    <p>Select a month and analysis type to begin.</p>
+</div>
+
+<div class="analysis-form">
+    <form action="{{ url_for('analyze') }}" method="post">
+        <div class="form-group">
+            <label for="month">Select Month:</label>
+            <select id="month" name="month" required>
+                <option value="" selected disabled>-- Select Month --</option>
+                {% for month in months %}
+                <option value="{{ month }}">{{ month|title }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label>Hierarchical Analysis Type:</label>
+            <div class="radio-options">
+                <div class="radio-option">
+                    <input type="radio" id="hierarchy1" name="hierarchy" value="1" required>
+                    <label for="hierarchy1">Location Based: Neighbourhood → Crime Category → Premises Taken Place</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="hierarchy2" name="hierarchy" value="2">
+                    <label for="hierarchy2">Time Based: Time of Day → Crime Category → Neighbourhood</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="hierarchy3" name="hierarchy" value="3">
+                    <label for="hierarchy3">Crime Based: Crime Category → Neighbourhood → Premises Taken Place</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="hierarchy4" name="hierarchy" value="4">
+                    <label for="hierarchy4">Premise Based: Premises Taken Place → Crime Category → Neighbourhood</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="hierarchy5" name="hierarchy" value="5">
+                    <label for="hierarchy5">Custom</label>
+                </div>
+            </div>
+        </div>
+        
+        <button type="submit" class="btn-primary">Analyze</button>
+    </form>
+</div>
+{% endblock %}

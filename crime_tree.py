@@ -313,6 +313,14 @@ class Tree:
         else:  # Linux and other systems
             subprocess.run(['xdg-open', output_file + '.svg'])
 
+    def visualize_web(self) -> str:
+        """Visualize the tree and return SVG data for web display."""
+        dot = graphviz.Digraph()
+        self._add_nodes(dot)
+        
+        # Return the SVG source directly
+        return dot.pipe(format='svg').decode('utf-8')
+
     def _add_nodes(self, dot: graphviz.Digraph, parent_id: Optional[str] = None, level: int = 0) -> None:
         """Add nodes to the Graphviz Digraph for visualization.
 

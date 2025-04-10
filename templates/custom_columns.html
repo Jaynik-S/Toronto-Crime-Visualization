@@ -1,0 +1,77 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="custom-columns">
+    <h2>Custom Hierarchy Selection</h2>
+    <p>Select three columns in order to define your custom hierarchy.</p>
+    
+    <form action="{{ url_for('custom_columns') }}" method="post">
+        <div class="form-group">
+            <label for="column1">First Level:</label>
+            <select id="column1" name="column1" required>
+                <option value="" selected disabled>-- Select Column --</option>
+                <option value="NEIGHBOURHOOD_158">Neighbourhood</option>
+                <option value="OCC_HOUR">Time of Day</option>
+                <option value="MCI_CATEGORY">Crime Category</option>
+                <option value="PREMISES_TYPE">Premises Type</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="column2">Second Level:</label>
+            <select id="column2" name="column2" required>
+                <option value="" selected disabled>-- Select Column --</option>
+                <option value="NEIGHBOURHOOD_158">Neighbourhood</option>
+                <option value="OCC_HOUR">Time of Day</option>
+                <option value="MCI_CATEGORY">Crime Category</option>
+                <option value="PREMISES_TYPE">Premises Type</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="column3">Third Level:</label>
+            <select id="column3" name="column3" required>
+                <option value="" selected disabled>-- Select Column --</option>
+                <option value="NEIGHBOURHOOD_158">Neighbourhood</option>
+                <option value="OCC_HOUR">Time of Day</option>
+                <option value="MCI_CATEGORY">Crime Category</option>
+                <option value="PREMISES_TYPE">Premises Type</option>
+            </select>
+        </div>
+        
+        <button type="submit" class="btn-primary">Create Custom Visualization</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    // Function to update available options in dropdown
+    function updateOptions() {
+        const selected = [
+            $('#column1').val(),
+            $('#column2').val(),
+            $('#column3').val()
+        ].filter(val => val !== null && val !== "");
+        
+        $('select').each(function() {
+            const currentVal = $(this).val();
+            
+            // Enable all options first
+            $(this).find('option').prop('disabled', false);
+            
+            // Disable selected options in other dropdowns
+            for (const value of selected) {
+                if (value && value !== currentVal) {
+                    $(this).find(`option[value="${value}"]`).prop('disabled', true);
+                }
+            }
+        });
+    }
+    
+    // Update options when any dropdown changes
+    $('select').change(updateOptions);
+});
+</script>
+{% endblock %}
