@@ -1,4 +1,4 @@
-"""CSC111 Project 2: Helper Functions
+"""Helper Functions
 
 This file includes functions for input validation, custom column selection for analysis,
 ranking display and output styling."""

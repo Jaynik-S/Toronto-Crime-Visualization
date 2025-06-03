@@ -1,4 +1,4 @@
-"""CSC111 Project 2: Main"""
+"""Main"""
 
 import render_data as rd
 from helper_functions import validate_choice, get_custom_tree_columns, tw_print, begin_msg, col_r, col_y

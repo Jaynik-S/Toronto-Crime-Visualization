@@ -1,4 +1,4 @@
-"""CSC111 Project 2: Data Processing and Visualization
+"""Data Processing and Visualization
 
 This file processes the dataset to build decision trees for analysis.
 It includes functionality to construct a full crime tree from a dataset and generate

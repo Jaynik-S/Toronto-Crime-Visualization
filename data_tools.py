@@ -1,4 +1,4 @@
-"""CSC111 Project 2: Data Analysis Tools
+"""Data Analysis Tools
 
 This file provides tools for analyzing and interacting with crime data
 using the tree structure. It includes user-interaction framework for analysis tools.

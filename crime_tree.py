@@ -1,4 +1,4 @@
-"""CSC111 Project 2: Crime Tree Functions
+"""Crime Tree Functions
 
 This file contains the implementation of a Tree class designed for analyzing and visualizing crime data.
 The Tree class supports hierarchical data insertion, frequency-based analysis, and various data analysis methods.
@@ -349,10 +349,3 @@ class Tree:
 if __name__ == '__main__':
     import doctest
     doctest.testmod(verbose=True)
-
-    # import python_ta
-    # python_ta.check_all(config={
-    #     'extra-imports': ['graphviz', 'os'],  # the names (strs) of imported modules
-    #     'allowed-io': [],  # the names (strs) of functions that call print/open/input
-    #     'max-line-length': 120
-    # })
